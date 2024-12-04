@@ -1,0 +1,57 @@
+{
+  "name": "@rsbuild/plugin-deploy",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "bun@1.1.30+",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "check": "biome check --write",
+    "dev": "rslib build --watch",
+    "format": "biome format --write",
+    "lint-staged": "lint-staged",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.3",
+    "@rsbuild/core": "^1.1.6",
+    "@rslib/core": "^0.1.2",
+    "@types/node": "^22.8.1",
+    "chalk": "^5.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "node-ssh": "^13.2.0",
+    "typescript": "^5.6.3"
+  },
+  "peerDependencies": {
+    "@rsbuild/core": "1.x"
+  },
+  "peerDependenciesMeta": {
+    "@rsbuild/core": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "homepage": "https://github.com/839900146/rsbuild-plugin-deploy.git"
+}
