@@ -1,10 +1,10 @@
-# rsbuild-plugin-deploy Readme
+# rsbuild-plugin-deploy
 
-`rsbuild-plugin-deploy` 是一个功能强大的部署插件，旨在通过 SSH 连接将文件自动化地部署到远程服务器上。该插件与 `rsbuild` 构建系统高度集成，使得部署流程更加流畅和可控。
+`rsbuild-plugin-deploy` 是一个功能强大的部署插件，旨在通过 SSH 连接将文件自动化地部署到远程服务器上。该插件与 `rsbuild` 构建系统高度集成，是 `rsbuild` 的一个插件，使得部署流程更加流畅和可控。
 
 ## 安装
 
-首先，请确保你的项目中已经安装了 `@rsbuild/core` 和 `node-ssh` 这两个依赖包。随后，你可以通过 npm 或 yarn 安装 `rsbuild-plugin-deploy` 插件：
+你可以通过包管理器安装 `rsbuild-plugin-deploy` 插件：
 
 ```bash
 # 使用npm
