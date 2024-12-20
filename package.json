@@ -23,7 +23,9 @@
     "dev": "rslib build --watch",
     "format": "biome format --write",
     "lint-staged": "lint-staged",
-    "prepare": "husky"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepare": "husky",
+    "preinstall": "npx only-allow bun"
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs}": [
@@ -36,6 +38,7 @@
     "@rslib/core": "^0.1.2",
     "@types/node": "^22.8.1",
     "chalk": "^5.3.0",
+    "conventional-changelog-cli": "^5.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "node-ssh": "^13.2.0",
