@@ -1,6 +1,8 @@
 # rsbuild-plugin-deploy
 
-`rsbuild-plugin-deploy` 是一个功能强大的部署插件，旨在通过 SSH 连接将文件自动化地部署到远程服务器上。该插件与 `rsbuild` 构建系统高度集成，是 `rsbuild` 的一个插件，使得部署流程更加流畅和可控。
+[English](./README.en.md) | 简体中文
+
+`rsbuild-plugin-deploy` 是一个功能强大的部署插件，用于通过 SSH 将构建产物自动化部署到远程服务器。该插件与 `rsbuild` 构建系统无缝集成。
 
 ## 安装
 
@@ -17,6 +19,32 @@ pnpm add rsbuild-plugin-deploy -D
 bun add rsbuild-plugin-deploy -D
 ```
 
+## 特性
+
+-   🚀 支持多服务器并行部署
+-   🔒 支持密码和密钥两种认证方式
+-   🎯 灵活的文件上传配置
+-   ⚡️ 部署前后命令执行
+-   🎨 自定义部署钩子函数
+-   📦 智能的产物上传策略
+-   🔄 支持自定义文件过滤
+-   ⚙️ 完整的类型定义支持
+
+## 工作流程
+
+1. 构建完成后自动触发部署
+2. 执行全局 `onBeforeUpload` 钩子
+3. 对每个服务器并行执行:
+    - 建立 SSH 连接
+    - 执行服务器级 `onBeforeUpload` 钩子
+    - 执行 `preCommands` 命令
+    - 处理上传文件列表
+    - 上传文件和目录(支持过滤 node_modules 和隐藏文件)
+    - 执行 `postCommands` 命令
+    - 执行服务器级 `onAfterUpload` 钩子
+4. 执行全局 `onAfterUpload` 钩子
+5. 输出部署结果和耗时统计
+
 ## 使用指南
 
 ### 配置参数详解
@@ -25,8 +53,8 @@ bun add rsbuild-plugin-deploy -D
 
 #### 服务器配置（`servers`）
 
--   **类型**：`ServerOption` 或 `ServerOption[]`
--   **描述**：定义了一个或多个服务器的连接和部署配置。
+-   **类型**：`ServerOption | ServerOption[]`
+-   **描述**：定义单个或多个服务器的部署配置，支持并行部署
 
 ##### `sshConfig`
 
@@ -56,10 +84,17 @@ bun add rsbuild-plugin-deploy -D
 ##### `include (可选)`
 
 -   **类型**：`IncludeStruct`
--   **描述**：用于动态指定要上传的文件或目录集合。可以是字符串、`FileStruct` 对象或返回 `FileStruct` 的函数。**若不指定，默认上传 dist 产物，若指定了 include，则不再自动上传 dist 产物**。
-    -   `FileStruct`：
-        -   `local`（字符串）：本地文件或目录的路径。
-        -   `remote`（字符串）：远程文件或目录的路径。
+-   **描述**：指定要上传的文件或目录集合。支持以下几种方式：
+
+    -   字符串路径：直接指定本地文件或目录
+    -   FileStruct 对象：指定本地和远程的映射关系
+    -   函数：根据构建上下文动态生成映射关系
+
+    **注意**:
+
+    -   默认情况下会上传 dist 产物目录
+    -   指定 include 后将仅上传指定的文件/目录
+    -   上传时会自动过滤 node_modules 和以 . 开头的隐藏文件
 
 ### 钩子函数（`Hook`）
 
@@ -113,7 +148,7 @@ interface HookOption {
 以下是一个将 `pluginDeploy` 插件集成到 rsbuild 配置中的示例：
 
 ```javascript
-import pluginDeploy from '@your-package/pluginDeploy';
+import { pluginDeploy } from 'rsbuild-plugin-deploy';
 
 export default defineConfig({
 	plugins: [
@@ -174,8 +209,8 @@ export default defineConfig({
 -   如果使用私钥进行身份验证，请确保私钥文件的权限设置正确。
 -   钩子函数中的异步操作应使用 `async/await` 或返回 `Promise`，以确保它们按顺序执行。
 
-### 二次开发
+## 二次开发与维护
 
-#### 开发环境
+### 开发环境
 
--   包管理器：`bun:1.1.38`，建议不低于`1.1.30`
+-   包管理器：`bun:1.1.40`，建议不低于`1.1.40`
