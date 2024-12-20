@@ -33,6 +33,10 @@
   },
   "linter": {
     "enabled": true,
+    "ignore": [
+      "*.test.ts",
+      "*.spec.ts"
+    ],
     "rules": {
       "recommended": true,
       "suspicious": {

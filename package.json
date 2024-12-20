@@ -34,7 +34,9 @@
     "lint-staged": "lint-staged",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky",
-    "preinstall": "npx only-allow bun"
+    "preinstall": "npx only-allow bun",
+    "test": "bun test",
+    "test:watch": "bun test --watch"
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs}": [
@@ -45,7 +47,7 @@
     "@biomejs/biome": "^1.9.3",
     "@rsbuild/core": "^1.1.6",
     "@rslib/core": "^0.1.2",
-    "@types/node": "^22.8.1",
+    "@types/bun": "^1.1.14",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "typescript": "^5.6.3"

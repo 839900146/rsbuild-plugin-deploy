@@ -78,6 +78,11 @@ export class DeployTask {
                     web,
                 );
             default:
+                console.log(
+                    chalk.yellow(
+                        `${localPath} is an unsupported file type, this task will be skipped!`,
+                    ),
+                );
                 return undefined;
         }
     }
@@ -261,6 +266,8 @@ export class DeployTask {
                 this.pluginOption.onAfterUpload,
                 this.serverConfig.onAfterUpload,
             ]);
+        } catch (error: unknown) {
+            this.handleError(error, 'Deploy failed');
         } finally {
             // Always dispose SSH connection regardless of success or failure
             this.ssh.dispose();
