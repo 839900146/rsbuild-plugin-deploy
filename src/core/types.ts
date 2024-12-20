@@ -52,4 +52,6 @@ export type PluginDeployOptions = {
     servers: ServerOption | ServerOption[];
     // 公共配置远程目录
     baseRemote?: string;
+    // 忽略上传的文件
+    ignore?: (string | RegExp | ((filePath: string) => boolean))[];
 } & Hook;
