@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "type": "module",
-  "packageManager": "bun@1.1.30+",
+  "packageManager": "bun@1.1.40+",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
