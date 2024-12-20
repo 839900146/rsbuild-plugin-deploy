@@ -392,4 +392,43 @@ describe('DeployTask', () => {
         );
         expect(hasExpectedCall).toBe(true);
     });
+
+    // 测试 ignore 配置
+    test('should handle ignore configuration', async () => {
+        const { DeployTask } = await import('../src/core/deploy-task');
+
+        fs.writeFileSync('test.txt', 'test');
+        fs.writeFileSync('abc.txt', 'abc');
+        fs.writeFileSync('abc.log', 'abc');
+
+        const task = new DeployTask(
+            {
+                ...mockServerConfig,
+                include: [
+                    { local: './test.txt', remote: '/remote/test.txt' },
+                    { local: './abc.txt', remote: '/remote/abc.txt' },
+                    { local: './abc.log', remote: '/remote/abc.log' },
+                ],
+            },
+            {
+                ...mockPluginOption,
+                ignore: [
+                    '.git',
+                    /abc/,
+                    (filePath) => filePath.endsWith('.log'),
+                ],
+            },
+        );
+        const consoleSpy = spyOn(console, 'log');
+
+        await task.execute({ distPath: 'dist' } as any);
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+            expect.stringContaining('ignore'),
+        );
+
+        fs.rmSync('test.txt');
+        fs.rmSync('abc.txt');
+        fs.rmSync('abc.log');
+    });
 });

@@ -143,6 +143,18 @@ interface HookOption {
 -   **类型**：`string`（可选）
 -   **描述**：为所有服务器配置提供一个公共的远程根目录。若 servers 内的 remote 配置项为空，则使用该配置项作为远程根目录。
 
+### 忽略上传的文件（`ignore`）
+
+-   **类型：** `(string | RegExp | ((filePath: string) => boolean))[]`
+-   **默认值：** `[]`
+
+忽略上传的文件配置，支持以下几种匹配方式：
+
+1. 字符串：使用 `includes` 匹配，例如 `'.git'` 将忽略所有路径中包含 `.git` 的文件
+2. 正则表达式：使用 `test` 匹配，例如 `/\.DS_Store$/` 将忽略所有 `.DS_Store` 结尾的文件
+3. 函数：自定义匹配逻辑，参数为文件路径，返回 `true` 表示忽略该文件
+4. 优先级：`ignore` 配置项的优先级高于 `include` 配置项，即 `ignore` 配置项会覆盖 `include` 配置项中的文件
+
 ### 示例配置
 
 以下是一个将 `pluginDeploy` 插件集成到 rsbuild 配置中的示例：
@@ -189,6 +201,16 @@ export default defineConfig({
 				// 可以添加更多服务器配置
 			],
 			baseRemote: '/common/remote/path', // 可选，提供公共远程根目录
+			ignore: [
+				// 忽略 .git 目录
+				'.git',
+				// 忽略 .DS_Store 文件
+				/\.DS_Store$/,
+				// 忽略所有以 .test.ts 结尾的文件
+				/\.test\.ts$/,
+				// 忽略所有 .log 文件
+				(filePath) => filePath.endsWith('.log'),
+			],
 			onBeforeUpload: async (option) => {
 				console.log('Before upload hook executed');
 				// 执行自定义逻辑

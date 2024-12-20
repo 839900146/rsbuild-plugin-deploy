@@ -133,6 +133,18 @@ interface HookOption {
 -   **Type**: `string` (optional)
 -   **Description**: Provides a common remote root directory for all server configurations
 
+### Ignore Files Configuration (`ignore`)
+
+-   **Type**: `(string | RegExp | ((filePath: string) => boolean))[]`
+-   **Default**: `[]`
+
+Ignore file configuration, supports the following matching methods:
+
+1. String: Use `includes` matching, e.g. `'.git'` will ignore all files containing `.git` in the path
+2. Regular expression: Use `test` matching, e.g. `/\.DS_Store$/` will ignore all files ending with `.DS_Store`
+3. Function: Custom matching logic, parameter is file path, return `true` to ignore the file
+4. Priority: The `ignore` configuration item has higher priority than the `include` configuration item, that is, the `ignore` configuration item will override the file in the `include` configuration item
+
 ### Example Configuration
 
 Here's an example of integrating the `pluginDeploy` plugin into rsbuild configuration:
@@ -168,6 +180,16 @@ export default defineConfig({
 				},
 			],
 			baseRemote: '/common/remote/path',
+			ignore: [
+				// Ignore .git directory
+				'.git',
+				// Ignore .DS_Store file
+				/\.DS_Store$/,
+				// Ignore all files ending with .test.ts
+				/\.test\.ts$/,
+				// Ignore all .log files
+				(filePath) => filePath.endsWith('.log'),
+			],
 			onBeforeUpload: async (option) => {
 				console.log('Before upload hook executed');
 			},

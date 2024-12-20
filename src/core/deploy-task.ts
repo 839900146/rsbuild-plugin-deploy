@@ -17,12 +17,14 @@ export class DeployTask {
     private readonly serverConfig: ServerOption;
     private readonly pluginOption: PluginDeployOptions;
     private readonly remoteDir: string;
+    private readonly ignore: PluginDeployOptions['ignore'];
 
     constructor(serverConfig: ServerOption, pluginOption: PluginDeployOptions) {
         this.ssh = new NodeSSH();
         this.serverConfig = serverConfig;
         this.pluginOption = pluginOption;
         this.remoteDir = serverConfig.remote || pluginOption.baseRemote || '';
+        this.ignore = pluginOption.ignore || [];
     }
 
     private async connect() {
@@ -94,12 +96,38 @@ export class DeployTask {
         };
     }
 
+    private shouldIgnore(filePath: string): boolean {
+        if (!this.ignore?.length) return false;
+
+        return this.ignore.some((pattern) => {
+            if (typeof pattern === 'string') {
+                return filePath.includes(pattern);
+            }
+            if (pattern instanceof RegExp) {
+                return pattern.test(filePath);
+            }
+            if (typeof pattern === 'function') {
+                return pattern(filePath);
+            }
+            return false;
+        });
+    }
+
     private async validateAndAddFileStruct(item: FileStruct) {
         if (!item.local || !item.remote) {
             console.log(
                 chalk.yellow(
                     'Missing local or remote path, this task will be skipped!',
                     item,
+                ),
+            );
+            return;
+        }
+
+        if (this.shouldIgnore(item.local)) {
+            console.log(
+                chalk.yellow(
+                    `${item.local} is ignored, this task will be skipped!`,
                 ),
             );
             return;
@@ -148,7 +176,9 @@ export class DeployTask {
             validate: (itemPath: string) => {
                 const baseName = path.basename(itemPath);
                 return (
-                    baseName.slice(0, 1) !== '.' && baseName !== 'node_modules'
+                    baseName.slice(0, 1) !== '.' &&
+                    baseName !== 'node_modules' &&
+                    !this.shouldIgnore(itemPath)
                 );
             },
             tick: (
